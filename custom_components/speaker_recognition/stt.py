@@ -24,7 +24,14 @@ from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
 
-from .const import CONF_ENTRY_TYPE, CONF_STT_ENTITY, DOMAIN, ENTRY_TYPE_MAIN
+from .const import (
+    CONF_ENTRY_TYPE,
+    CONF_SKIP_WITHOUT_TEXT,
+    CONF_STT_ENTITY,
+    DEFAULT_SKIP_WITHOUT_TEXT,
+    DOMAIN,
+    ENTRY_TYPE_MAIN,
+)
 from .recognition import SpeakerRecognition
 
 _LOGGER = logging.getLogger(__name__)
@@ -62,6 +69,9 @@ async def async_setup_entry(
                 entity_id,
                 config_entry.entry_id,
                 main_entry,
+                config_entry.options.get(
+                    CONF_SKIP_WITHOUT_TEXT, DEFAULT_SKIP_WITHOUT_TEXT
+                ),
             )
         ]
     )
@@ -79,6 +89,7 @@ class SpeakerRecognitionSTTEntity(SpeechToTextEntity):
         stt_entity_id: str,
         unique_id: str,
         main_entry: ConfigEntry,
+        skip_without_text: bool = DEFAULT_SKIP_WITHOUT_TEXT,
     ) -> None:
         """Initialize the STT entity."""
         registry = er.async_get(hass)
@@ -105,6 +116,7 @@ class SpeakerRecognitionSTTEntity(SpeechToTextEntity):
         self._attr_unique_id = unique_id
         self._stt_entity_id = stt_entity_id
         self._main_entry = main_entry
+        self._skip_without_text = skip_without_text
 
         self._cached_languages: list[str] | None = None
         self._cached_formats: list[AudioFormats] | None = None
@@ -223,6 +235,11 @@ class SpeakerRecognitionSTTEntity(SpeechToTextEntity):
         result = await source_entity.async_process_audio_stream(
             metadata, buffered_stream()
         )
+
+        if self._skip_without_text and not result.text:
+            # Nothing was said, so there is no speaker to recognize; don't make the pipeline wait for the backend.
+            _LOGGER.debug("No text recognized, skipping speaker recognition")
+            return result
 
         # Perform speaker recognition on the collected audio
         if audio_buffer:

@@ -46,11 +46,13 @@
         "description": "Aktualisieren Sie die STT-Entität und Sprachproben.",
         "data": {
           "stt_entity": "Sprache-zu-Text-Entität",
-          "voice_samples": "Sprachproben"
+          "voice_samples": "Sprachproben",
+          "skip_recognition_without_text": "Sprechererkennung ohne Text überspringen"
         },
         "data_description": {
           "stt_entity": "Wählen Sie die STT-Entität für die Sprechererkennung aus",
-          "voice_samples": "Fügen Sie Sprachproben für die Sprechererkennung hinzu oder ändern Sie diese"
+          "voice_samples": "Fügen Sie Sprachproben für die Sprechererkennung hinzu oder ändern Sie diese",
+          "skip_recognition_without_text": "Kein Audio an das Backend senden, wenn die Spracherkennung keinen Text erkannt hat, damit die Pipeline nicht darauf wartet"
         }
       },
       "conversation_options": {

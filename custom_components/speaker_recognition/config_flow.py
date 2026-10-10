@@ -22,11 +22,13 @@ from .const import (
     CONF_ENTRY_TYPE,
     CONF_MIN_CONFIDENCE,
     CONF_SAMPLES,
+    CONF_SKIP_WITHOUT_TEXT,
     CONF_STT_ENTITY,
     CONF_USER,
     CONF_VOICE_SAMPLES,
     DEFAULT_BACKEND_URL,
     DEFAULT_MIN_CONFIDENCE,
+    DEFAULT_SKIP_WITHOUT_TEXT,
     DOMAIN,
     ENTRY_TYPE_CONVERSATION,
     ENTRY_TYPE_MAIN,
@@ -302,10 +304,16 @@ class SpeakerRecognitionOptionsFlow(OptionsFlow):
                     title="",
                     data={
                         CONF_STT_ENTITY: user_input[CONF_STT_ENTITY],
+                        CONF_SKIP_WITHOUT_TEXT: user_input.get(
+                            CONF_SKIP_WITHOUT_TEXT, DEFAULT_SKIP_WITHOUT_TEXT
+                        ),
                     },
                 )
 
         current_stt_entity = self.config_entry.data.get(CONF_STT_ENTITY)
+        current_skip = self.config_entry.options.get(
+            CONF_SKIP_WITHOUT_TEXT, DEFAULT_SKIP_WITHOUT_TEXT
+        )
 
         return self.async_show_form(
             step_id="stt_options",
@@ -318,6 +326,9 @@ class SpeakerRecognitionOptionsFlow(OptionsFlow):
                             domain=Platform.STT,
                         ),
                     ),
+                    vol.Optional(
+                        CONF_SKIP_WITHOUT_TEXT, default=current_skip
+                    ): selector.BooleanSelector(),
                 }
             ),
             errors=errors,

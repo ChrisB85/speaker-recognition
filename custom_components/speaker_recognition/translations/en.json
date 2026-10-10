@@ -46,11 +46,13 @@
         "description": "Update the STT entity and voice samples.",
         "data": {
           "stt_entity": "Speech-to-text entity",
-          "voice_samples": "Voice samples"
+          "voice_samples": "Voice samples",
+          "skip_recognition_without_text": "Skip speaker recognition without text"
         },
         "data_description": {
           "stt_entity": "Select the STT entity to use for speaker recognition",
-          "voice_samples": "Add or modify voice samples for speaker recognition"
+          "voice_samples": "Add or modify voice samples for speaker recognition",
+          "skip_recognition_without_text": "Don't send audio to the backend when the speech-to-text entity recognized nothing, so the pipeline does not wait for it"
         }
       },
       "conversation_options": {

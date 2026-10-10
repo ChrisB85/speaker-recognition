@@ -16,6 +16,7 @@ ENTRY_TYPE_CONVERSATION = "conversation"
 
 # STT configuration
 CONF_STT_ENTITY = "stt_entity"
+CONF_SKIP_WITHOUT_TEXT = "skip_recognition_without_text"
 
 # Conversation configuration
 CONF_CONVERSATION_ENTITY = "conversation_entity"
@@ -24,3 +25,4 @@ CONF_MIN_CONFIDENCE = "min_confidence"
 # Defaults
 DEFAULT_BACKEND_URL = "http://localhost:8099"
 DEFAULT_MIN_CONFIDENCE = 0.0
+DEFAULT_SKIP_WITHOUT_TEXT = False
